@@ -1,0 +1,6 @@
+[package]
+name = "aoc"
+version = "1.61.0"
+edition = "2021"
+
+[dependencies]
