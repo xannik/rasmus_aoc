@@ -26,14 +26,21 @@ where
     Ok(io::BufReader::new(file).lines())
 }
 
+fn move_crates_9001(stacks: &mut [VecDeque<u8>], amount_to_move: usize, from: usize, to: usize) {
+    if amount_to_move == 1 {
+        let item_to_move = stacks[from].pop_back().expect("none");
+        stacks[to].push_back(item_to_move);
+    } else {
+        let stack_size = stacks[from].len();
+        let mut items_to_move = stacks[from].split_off(stack_size - amount_to_move);
+        stacks[to].append(&mut items_to_move);
+    }
+}
+
 fn move_crates(stacks: &mut [VecDeque<u8>], amount_to_move: usize, from: usize, to: usize) {
     for _i in 1..amount_to_move + 1 {
         let item_to_move = stacks[from].pop_back().expect("none");
-        println!("{}", item_to_move);
         stacks[to].push_back(item_to_move);
-    }
-    for stack in stacks {
-        println!("current stack state: {:?}", stack);
     }
 }
 
@@ -47,6 +54,41 @@ fn parse_and_store_cargo(stacks: &mut [VecDeque<u8>], line: String) -> () {
             }
             store_at += 1;
         }
+}
+
+fn get_solution_part2(path: &str) -> String {
+    let mut result: [char ; 9] = Default::default();
+    if let Ok(lines) = read_lines(path) {
+        // allocate the different stacks
+        let mut stacks: [VecDeque<u8>; 9] = Default::default();
+       
+        //let mut moves: Vec<&str> = Vec::new();
+        for line in lines {
+            let current_line = String::from(line.unwrap());
+            if current_line.contains("[") {
+                parse_and_store_cargo(&mut stacks, current_line);
+
+            }else if current_line.contains("move") {
+                let mut commands = Vec::new();
+                for subs in current_line.split(" ") {
+                    match subs.parse::<i32>(){
+                        Ok(number) => commands.push(number),
+                        _ => continue,
+                    };
+                    
+                }
+                move_crates_9001(&mut stacks, commands[0] as usize, commands[1] as usize - 1, commands[2] as usize - 1);
+
+            }
+            
+        }
+        for _i in 0..9 {
+            result[_i] = (stacks[_i].pop_back().expect("empty queue")) as char;
+        }
+    }
+    
+    
+    return String::from(result.iter().cloned().collect::<String>());
 }
 
 fn get_solution_part1(path: &str) -> String {
@@ -70,7 +112,6 @@ fn get_solution_part1(path: &str) -> String {
                     };
                     
                 }
-                println!("{} {} {}", commands[0], commands[1], commands[2]);
                 move_crates(&mut stacks, commands[0] as usize, commands[1] as usize - 1, commands[2] as usize - 1);
 
             }
@@ -92,7 +133,7 @@ fn main() {
     };
 
     if part == "part2" {
-        //println!("{}", get_solution_part2("input.txt"));
+        println!("{}", get_solution_part2("input.txt"));
     } else {
         println!("{}", get_solution_part1("input.txt"));
     }
