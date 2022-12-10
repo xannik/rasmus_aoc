@@ -10,46 +10,7 @@ use std::path::Path;
 
 */
 
-/*fn find_matching_item(
-    first_rucksack: &mut [u8],
-    second_rucksack: &mut [u8],
-    third_rucksack: &mut [u8],
-) -> u8 {
-    second_rucksack.sort_unstable();
-    first_rucksack.sort_unstable();
-
-    let mut matching_item: Vec<u8> = Vec::new();
-    let mut previous_item_f = 0;
-    let mut previous_item_s = 0;
-    for item_f in first_rucksack {
-        if previous_item_f != *item_f {
-            previous_item_f = *item_f
-        } else {
-            continue;
-        }
-        for item_s in second_rucksack {
-            if previous_item_s != *item_s {
-                previous_item_s = *item_s
-            } else {
-                continue;
-            }
-            if *item_f == *item_s {
-                matching_item.push(*item_f);
-            }
-        }
-    }
-    third_rucksack.sort_unstable();
-    for item_f in matching_item {
-        for item_s in third_rucksack {
-            if item_f == *item_s {
-                return item_f;
-            }
-        }
-    }
-    return u8::MAX;
-}*/
-
-/*fn get_solution_part2(path: &str) -> u32 {
+fn get_solution_part2(path: &str) -> u32 {
     let mut result = 0;
     let mut rucksacks: Vec<Vec<u8>> = Vec::new();
     if let Ok(lines) = read_lines(path) {
@@ -65,52 +26,33 @@ use std::path::Path;
 
         first_rucksack.sort_unstable();
         second_rucksack.sort_unstable();
-
-        let mut matching_item_list: Vec<u8> = Vec::new();
-        let mut matching_item;
+        third_rucksack.sort_unstable();
+        let mut matching_item = 0;
         let mut previous_item_f = 0;
-        let mut previous_item_s = 0;
         for item_f in first_rucksack {
             if previous_item_f != item_f {
                 previous_item_f = item_f
             } else {
                 continue;
             }
-            for item_s in second_rucksack {
-                if previous_item_s != item_s {
-                    previous_item_s = item_s
-                } else {
-                    continue;
-                }
-                if item_f == item_s {
-                    matching_item_list.push(item_f);
-                }
-            }
-        }
-        third_rucksack.sort_unstable();
-        for item_f in matching_item_list {
-            for item_s in third_rucksack {
-                if item_f == item_s {
+            if second_rucksack.contains(&item_f) {
+                if third_rucksack.contains(&item_f) {
                     matching_item = item_f;
-                    break;
-                } else {
-                    matching_item = 255;
                 }
             }
         }
-        if matching_item == 255 {
+
+        if matching_item == (255 as u8) {
             continue;
         }
         if matching_item >= 65 && matching_item <= 96 {
             result += (matching_item - 65 + 27) as u32;
-            println!("{}", matching_item - 65 + 27);
         } else if matching_item >= 97 && matching_item <= 122 {
             result += (matching_item - 97 + 1) as u32;
-            println!("{}", matching_item - 97 + 1);
         }
     }
     return result;
-}*/
+}
 
 fn get_solution_part1(path: &str) -> u32 {
     let mut result = 0;
@@ -158,8 +100,7 @@ fn main() {
     };
 
     if part == "part2" {
-        //println!("{}", get_solution_part2("input.txt"));
-        println!("part 2");
+        println!("{}", get_solution_part2("input.txt"));
     } else {
         println!("{}", get_solution_part1("input.txt"));
     }
